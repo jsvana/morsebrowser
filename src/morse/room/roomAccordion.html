@@ -1,0 +1,46 @@
+<!-- ko with: vm -->
+<h2 class="accordion-header" id="headingRoom">
+    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRoom"
+        aria-expanded="false" aria-controls="collapseRoom" id="btnRoomAccordionButton">
+        <span>
+            &#128483;&nbsp;Class Room (Experimental)
+            <span class="badge"
+                data-bind="class: room.roomCode() ? 'bg-success' : 'bg-secondary', text: room.roomCode() ? (room.isHost() ? 'Hosting ' + room.roomCode() : 'In ' + room.roomCode()) : 'Not connected'"></span>
+        </span>
+    </button>
+</h2>
+<div id="collapseRoom" class="accordion-collapse collapse" aria-labelledby="headingRoom">
+    <div class="accordion-body">
+        <div class="row gy-2 gx-2">
+            <div class="col-auto">
+                <div class="input-group-vertical">
+                    <span class="input-group-text">Instructor</span>
+                    <button type="button" class="btn btn-success" data-bind="click: room.createRoom, disable: room.busy">
+                        Create Room
+                    </button>
+                    <!-- ko if: room.isHost() && room.roomCode() -->
+                    <span class="input-group-text">Share code</span>
+                    <input type="text" readonly class="form-control" style="font-size:1.5rem;font-weight:bold;letter-spacing:0.2rem;width:160px;"
+                        data-bind="value: room.roomCode">
+                    <!-- /ko -->
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="input-group-vertical">
+                    <span class="input-group-text">Student</span>
+                    <input type="text" class="form-control" maxlength="5" placeholder="Enter code" style="text-transform:uppercase;width:160px;"
+                        data-bind="textInput: room.joinCodeInput">
+                    <button type="button" class="btn btn-primary" data-bind="click: room.joinRoom, disable: room.busy">
+                        Join Room
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row gy-2 gx-2">
+            <div class="col-auto">
+                <span data-bind="text: room.status"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /ko -->

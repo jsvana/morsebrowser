@@ -7,10 +7,7 @@ import { getAuth } from 'firebase/auth'
 export const firebaseConfig = {
   apiKey: 'AIzaSyB9AD9c46PD2MLoRhw1erCSGtOJJ41gkVI',
   authDomain: 'morse-practice-page.firebaseapp.com',
-  // TODO: paste this from the Firebase console AFTER creating the Realtime Database.
-  // It looks like https://morse-practice-page-default-rtdb.firebaseio.com
-  // (or ...-default-rtdb.<region>.firebasedatabase.app for non-US regions).
-  databaseURL: '',
+  databaseURL: 'https://morse-practice-page-default-rtdb.firebaseio.com',
   projectId: 'morse-practice-page',
   storageBucket: 'morse-practice-page.firebasestorage.app',
   messagingSenderId: '1039177412775',

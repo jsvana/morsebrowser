@@ -17,6 +17,8 @@ import SimpleImageTemplate from './components/morseImage/simpleImage'
 import NoiseAccordion from './components/noiseAccordion/noiseAccordion'
 import RssAccordion from './components/rssAccordion/rssAccordion'
 import FlaggedWordsAccordion from './components/flaggedWordsAccordion/flaggedWordsAccordion'
+import { MorseRoom } from './room/morseRoom'
+import RoomAccordion from './room/roomAccordion'
 import { CardBufferManager } from './utils/cardBufferManager'
 import WordInfo from './utils/wordInfo'
 import { PlayingTimeInfo } from './utils/playingTimeInfo'
@@ -80,6 +82,7 @@ export class MorseViewModel {
   // voiceBuffer:string[]
   doPlayTimeout:any
   rss:MorseRssPlugin
+  room:MorseRoom
   lastShuffled:string = ''
   flaggedWordsLogCount:number = 0
   flaggedWordsLog:any[] = []
@@ -125,6 +128,8 @@ export class MorseViewModel {
     }, this)
 
     this.rss = new MorseRssPlugin(new RssConfig(this.setText, this.fullRewind, this.doPlay, this.lastFullPlayTime, this.playerPlaying))
+
+    this.room = new MorseRoom(this)
 
     // check for admin mode turned on 
     if (GeneralUtils.getParameterByName('adminMode')) {
@@ -182,6 +187,13 @@ export class MorseViewModel {
     ko.components.register('noiseaccordion', NoiseAccordion)
     ko.components.register('rssaccordion', RssAccordion)
     ko.components.register('flaggedwordsaccordion', FlaggedWordsAccordion)
+    ko.components.register('roomaccordion', RoomAccordion)
+
+    // auto-join a room from ?room=CODE once the app has settled
+    if (GeneralUtils.getParameterByName('room')) {
+      this.room.joinCodeInput(GeneralUtils.getParameterByName('room'))
+      setTimeout(() => { this.room.joinRoom() }, 2000)
+    }
 
     // card buffer manager
     this.cardBufferManager = new CardBufferManager(() => this.currentIndex(), () => this.words())

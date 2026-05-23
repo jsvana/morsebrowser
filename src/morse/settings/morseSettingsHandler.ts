@@ -1,6 +1,5 @@
 import { MorseViewModel } from '../morse'
 import SavedSettingsInfo from './savedSettingsInfo'
-import { SettingsChangeInfo } from './settingsChangeInfo'
 import { SettingsOption } from './settingsOption'
 
 // import * as ko from 'knockout'
@@ -87,6 +86,22 @@ export default class MorseSettingsHandler {
     document.body.removeChild(elemx)
   }
 
+  // Apply a settings object ({ morseSettings: [...] }) as a selectable custom
+  // preset. Shared by file-load and room-join so both use the same proven path.
+  static applyLoadedSettings (morseViewModel: MorseViewModel, settings: any, displayName: string) {
+    const option = new SettingsOption()
+    option.display = displayName
+    option.filename = displayName
+    option.isCustom = true
+    option.isDummy = false
+    option.morseSettings = settings.morseSettings
+
+    morseViewModel.lessons.customSettingsOptions.push(option)
+    morseViewModel.lessons.getSettingsPresets(true)
+    morseViewModel.lessons.setPresetSelected(option)
+    return option
+  }
+
   static settingsFileChange (element: HTMLInputElement, morseViewModel: MorseViewModel) {
     const file = element.files?.[0]
     if (!file) return
@@ -95,22 +110,7 @@ export default class MorseSettingsHandler {
     fr.onload = (data) => {
       const settings = JSON.parse(data.target?.result as string)
       element.value = '' // Clear input to allow re-loading the same file
-      const settingsInfo = new SettingsChangeInfo(morseViewModel)
-      settingsInfo.ifLoadSettings = true
-      settingsInfo.ignoreCookies = true
-      settingsInfo.custom = settings.morseSettings
-      settingsInfo.keyBlacklist = ['cardFontPx', 'preSpace']
-
-      const option = new SettingsOption()
-      option.display = file.name.split('.')[0]
-      option.filename = file.name
-      option.isCustom = true
-      option.isDummy = false
-      option.morseSettings = settings.morseSettings
-
-      morseViewModel.lessons.customSettingsOptions.push(option)
-      morseViewModel.lessons.getSettingsPresets(true)
-      morseViewModel.lessons.setPresetSelected(option)
+      this.applyLoadedSettings(morseViewModel, settings, file.name.split('.')[0])
     }
 
     fr.readAsText(file)
